@@ -36,6 +36,9 @@ export default function App() {
   const level = bundle.levels[index];
   const won = chain.at(-1) === level.end;
   const moves = chain.length - 1;
+  const currentWord = chain.at(-1)!;
+  const matchingPositions = [...level.end].map((letter, i) => letter === [...currentWord][i]);
+  const matchingCount = matchingPositions.filter(Boolean).length;
 
   function chooseLevel(next: number) {
     setIndex(next);
@@ -86,11 +89,11 @@ export default function App() {
           <div className="target-label">Преврати</div>
           <div className="word word-start" aria-label={`Начальное слово: ${level.start}`}>{[...level.start].map((letter, i) => <span className="letter" key={i}>{letter.toUpperCase()}</span>)}</div>
           <div className="route" aria-live="polite">
-            {chain.slice(1).map((word, i) => <div className="route-step" key={i}><span className="route-number">{i + 1}</span><span>{word.toUpperCase()}</span></div>)}
+            {chain.slice(1).map((word, i) => <div className="route-step" key={i}><span className="route-number">{i + 1}</span><span className="route-letters">{[...word].map((letter, j) => <span key={j} className={letter !== [...chain[i]][j] ? "route-changed" : ""}>{letter.toUpperCase()}</span>)}</span></div>)}
             {!won && <div className="route-hint">↓ <span>Следующее слово</span></div>}
           </div>
-          <div className="target-label">В слово</div>
-          <div className={`word word-end ${won ? "word-complete" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className="letter" key={i}>{letter.toUpperCase()}</span>)}</div>
+          <div className="target-heading"><span className="target-label">В слово</span><span className="match-progress" aria-live="polite">{matchingCount} из {level.end.length} букв на месте</span></div>
+          <div className={`word word-end ${won ? "word-complete" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i}>{letter.toUpperCase()}</span>)}</div>
           {won ? (
             <div className="win" role="status">
               <h2>Получилось!</h2>
