@@ -93,10 +93,10 @@ export default function App() {
             {!won && <div className="route-hint">↓ <span>Следующее слово</span></div>}
           </div>
           <div className="target-heading"><span className="target-label">В слово</span><span className="match-progress" aria-live="polite">{matchingCount} из {level.end.length} букв на месте</span></div>
-          <div className={`word word-end ${won ? "word-complete" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i}>{letter.toUpperCase()}</span>)}</div>
+          <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as React.CSSProperties}>{letter.toUpperCase()}</span>)}</div>
           {won ? (
-            <div className="win" role="status">
-              <h2>Получилось!</h2>
+            <div className="win win-celebrate" role="status">
+              <div className="win-symbol" aria-hidden="true">✓</div><h2>Получилось!</h2>
               <p>{moves === level.min_moves ? "Идеальный маршрут — кратчайший путь." : `Цель достигнута за ${moves} ходов. Кратчайший путь — ${level.min_moves}.`}</p>
               <button onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Следующий уровень" : "Играть сначала"} <span aria-hidden="true">→</span></button>
             </div>
