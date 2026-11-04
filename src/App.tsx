@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import { checkMove, demo, loadBundle, type Bundle } from "./game";
 
 const STORAGE_KEY = "doublets-game:completed:v1";
@@ -93,7 +93,7 @@ export default function App() {
             {!won && <div className="route-hint">↓ <span>Следующее слово</span></div>}
           </div>
           <div className="target-heading"><span className="target-label">В слово</span><span className="match-progress" aria-live="polite">{matchingCount} из {level.end.length} букв на месте</span></div>
-          <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as React.CSSProperties}>{letter.toUpperCase()}</span>)}</div>
+          <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
           {won ? (
             <div className="win win-celebrate" role="status">
               <div className="win-symbol" aria-hidden="true">✓</div><h2>Получилось!</h2>
