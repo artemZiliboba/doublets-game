@@ -67,3 +67,23 @@
 .tile-submit:disabled{opacity:.45;cursor:not-allowed}
 .route{min-height:30px}
 @media(max-width:420px){.letter-input-tiles{gap:6px}.input-tile{width:clamp(37px,11vw,44px);height:53px;font-size:25px}.tile-input-row{gap:10px}.tile-submit{padding:12px 15px}}
+
+/* Victory replaces the input in the same reserved space: no new panel or scroll jump. */
+.move-slot{min-height:132px;display:flex;align-items:center}
+.move-slot>.tile-move-form{width:100%;margin:0}
+.compact-result{width:100%;min-height:94px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.result-summary{color:#dce9db;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.result-separator{color:#8eae9d;padding:0 3px}
+.next-level-button{border:0;background:#d4e59a;color:#17352d;border-radius:22px;padding:11px 17px;font-size:13px;font-weight:800;min-height:42px;white-space:nowrap}
+.next-level-button:hover{background:#e5f1b9}
+.next-level-button:focus-visible{outline:3px solid #f2e4a5;outline-offset:3px}
+.target-success{display:inline-flex;align-items:center;gap:5px;color:#cce5a3;font-size:12px;font-weight:700;margin-bottom:11px}
+.target-heading{min-height:40px;align-items:end}
+@media(prefers-reduced-motion:no-preference){
+  .word-celebrate .letter{animation:goal-pulse 680ms cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(var(--letter-index) * 80ms)}
+  .target-success,.compact-result{animation:win-soft-reveal 320ms ease-out both}
+}
+@keyframes goal-pulse{0%{transform:scale(1);background:#d4e59a}38%{transform:scale(1.075);background:#effac9}100%{transform:scale(1);background:#a4d6b5}}
+@keyframes win-soft-reveal{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.word-celebrate .letter,.target-success,.compact-result{animation:none}}
+@media(max-width:420px){.move-slot{min-height:120px}.compact-result{min-height:90px}}
