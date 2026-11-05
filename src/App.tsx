@@ -18,6 +18,8 @@ export default function App() {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [completed, setCompleted] = useState<string[]>(readCompleted);
+  const [levelPickerOpen, setLevelPickerOpen] = useState(false);
+  const [levelFilter, setLevelFilter] = useState<"all" | "open" | "done">("all");
 
   useEffect(() => {
     let active = true;
@@ -43,6 +45,14 @@ export default function App() {
   function chooseLevel(next: number) {
     setIndex(next);
     setChain([bundle.levels[next].start]);
+    setInput("");
+    setError("");
+    setLevelPickerOpen(false);
+  }
+
+  function undoMove() {
+    if (chain.length <= 1 || won) return;
+    setChain((previous) => previous.slice(0, -1));
     setInput("");
     setError("");
   }
@@ -108,10 +118,18 @@ export default function App() {
             </form>
           )}
           <div className="play-footer">
-            <button className="text-button" onClick={() => { setChain([level.start]); setInput(""); setError(""); }}>Начать заново</button>
-            <label className="level-select-label" htmlFor="level-select">Выбрать уровень <select id="level-select" value={index} onChange={(event) => chooseLevel(Number(event.target.value))}>{bundle.levels.map((item, i) => <option value={i} key={item.id}>{i + 1}{completed.includes(item.id) ? " ✓" : ""} — {item.start} → {item.end}</option>)}</select></label>
+            <div className="move-actions"><button className="text-button" onClick={undoMove} disabled={chain.length <= 1 || won}>Отменить ход</button><button className="text-button" onClick={() => { setChain([level.start]); setInput(""); setError(""); }} disabled={chain.length <= 1}>Начать заново</button></div>
+            <button className="level-picker-trigger" onClick={() => setLevelPickerOpen(true)}>Все уровни <span aria-hidden="true">↗</span></button>
           </div>
         </section>
+        {levelPickerOpen && <div className="picker-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setLevelPickerOpen(false); }}>
+          <section className="level-picker" role="dialog" aria-modal="true" aria-labelledby="picker-title" onKeyDown={(event) => { if (event.key === "Escape") setLevelPickerOpen(false); }}>
+            <div className="picker-header"><div><h2 id="picker-title">Выбери уровень</h2><p>{completed.filter((id) => bundle.levels.some((item) => item.id === id)).length} из {bundle.levels.length} пройдено</p></div><button className="picker-close" aria-label="Закрыть выбор уровней" onClick={() => setLevelPickerOpen(false)}>×</button></div>
+            <div className="picker-filters" role="group" aria-label="Фильтр уровней">{([["all", "Все"], ["open", "Не пройдены"], ["done", "Пройдены"]] as const).map(([value, label]) => <button key={value} className={levelFilter === value ? "filter-active" : ""} aria-pressed={levelFilter === value} onClick={() => setLevelFilter(value)}>{label}</button>)}</div>
+            <div className="level-grid">{bundle.levels.map((item, i) => { const done = completed.includes(item.id); if ((levelFilter === "done" && !done) || (levelFilter === "open" && done)) return null; return <button key={item.id} className={`level-tile ${i === index ? "tile-current" : ""} ${done ? "tile-done" : ""}`} aria-label={`Уровень ${i + 1}: ${item.start} — ${item.end}${done ? ", пройден" : ""}`} aria-current={i === index ? "true" : undefined} onClick={() => chooseLevel(i)}><strong>{i + 1}</strong><span>{item.start} → {item.end}</span>{done && <span className="tile-check" aria-hidden="true">✓</span>}</button>; })}</div>
+            {levelFilter === "done" && !bundle.levels.some((item) => completed.includes(item.id)) && <p className="picker-empty">Пока нет пройденных уровней. Самое время начать!</p>}
+          </section>
+        </div>}
       </main>
       <footer className="site-footer"><span>DOUBLETS · Слово за словом</span><span>Без спешки. С удовольствием.</span></footer>
     </div>
