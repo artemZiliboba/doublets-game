@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { checkMove, demo, loadBundle, type Bundle } from "./game";
+import WinConfetti from "./WinConfetti";
 
 const STORAGE_KEY = "doublets-game:completed:v1";
 
@@ -86,6 +87,7 @@ export default function App() {
 
   return (
     <div className="app">
+      {won && <WinConfetti key={`${level.id}-${chain.length}`} />}
       <header className="site-header">
         <a className="brand" href="/" aria-label="Doublets — главная">doublets<span className="brand-dot">.</span></a>
         <span className="header-note">Слова меняются. Правила — нет.</span>
@@ -129,6 +131,7 @@ export default function App() {
             <div className={`ladder-row ladder-goal ${won ? "ladder-goal-won" : ""}`}>
               <span className="ladder-label">Целевое<br />слово</span>
               <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
+              {won && <button ref={nextButtonRef} type="button" className="goal-next" onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Дальше" : "Сначала"} <span aria-hidden="true">→</span></button>}
             </div>
           </div>
           {won && <span className="sr-only" role="status">Уровень пройден. Нажмите Enter для следующего уровня.</span>}
