@@ -87,7 +87,6 @@ export default function App() {
 
   return (
     <div className="app">
-      {won && <WinConfetti key={`${level.id}-${chain.length}`} />}
       <header className="site-header">
         <a className="brand" href="/" aria-label="Doublets — главная">doublets<span className="brand-dot">.</span></a>
         <span className="header-note">Слова меняются. Правила — нет.</span>
@@ -101,6 +100,7 @@ export default function App() {
           {dataNotice && <p className="notice" role="status">{dataNotice}</p>}
         </section>
         <section className="play-area" aria-label="Игровое поле">
+          {won && <WinConfetti key={`${level.id}-${chain.length}`} />}
           <div className="play-top">
             <div><span className="overline">Уровень</span><strong>{String(index + 1).padStart(2, "0")} <span className="muted">/ {bundle.levels.length}</span></strong></div>
             <div className="play-top-right"><span className="overline">Ходов</span><strong>{moves} <span className="muted">/ мин. {level.min_moves}</span></strong></div>
