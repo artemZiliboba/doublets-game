@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { checkMove, demo, loadBundle, type Bundle } from "./game";
 
 const STORAGE_KEY = "doublets-game:completed:v1";
@@ -16,6 +16,7 @@ export default function App() {
   const [index, setIndex] = useState(0);
   const [chain, setChain] = useState<string[]>([demo.levels[0].start]);
   const [input, setInput] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [completed, setCompleted] = useState<string[]>(readCompleted);
   const [levelPickerOpen, setLevelPickerOpen] = useState(false);
@@ -41,6 +42,10 @@ export default function App() {
   const currentWord = chain.at(-1)!;
   const matchingPositions = [...level.end].map((letter, i) => letter === [...currentWord][i]);
   const matchingCount = matchingPositions.filter(Boolean).length;
+
+  useEffect(() => {
+    if (!won && !levelPickerOpen) inputRef.current?.focus();
+  }, [index, won, levelPickerOpen, bundle]);
 
   function chooseLevel(next: number) {
     setIndex(next);
@@ -100,8 +105,21 @@ export default function App() {
           <div className="word word-start" aria-label={`Начальное слово: ${level.start}`}>{[...level.start].map((letter, i) => <span className="letter" key={i}>{letter.toUpperCase()}</span>)}</div>
           <div className="route" aria-live="polite">
             {chain.slice(1).map((word, i) => <div className="route-step" key={i}><span className="route-number">{i + 1}</span><span className="route-letters">{[...word].map((letter, j) => <span key={j} className={letter !== [...chain[i]][j] ? "route-changed" : ""}>{letter.toUpperCase()}</span>)}</span></div>)}
-            {!won && <div className="route-hint">↓ <span>Следующее слово</span></div>}
+
           </div>
+          {!won && (
+            <form className="move-form tile-move-form" onSubmit={submit}>
+              <label htmlFor="next-word">Твой следующий ход</label>
+              <div className="tile-input-row">
+                <div className="letter-input-wrap" onClick={() => inputRef.current?.focus()}>
+                  <div className="letter-input-tiles" aria-hidden="true">{Array.from({ length: level.start.length }, (_, i) => <span className={`input-tile ${i === Math.min(input.length, level.start.length - 1) ? "input-tile-active" : ""}`} key={i}>{[...input][i] || ""}</span>)}</div>
+                  <input ref={inputRef} id="next-word" className="letter-input-native" type="text" inputMode="text" value={input} onChange={(event) => { setInput([...event.target.value.toLocaleUpperCase("ru").replace(/[^А-ЯЁ]/g, "")].slice(0, level.start.length).join("")); setError(""); }} maxLength={level.start.length} autoComplete="off" autoCapitalize="characters" spellCheck={false} aria-label={`Следующее слово, ${level.start.length} букв`} aria-invalid={Boolean(error)} aria-describedby={error ? "move-error" : undefined} />
+                </div>
+                <button type="submit" className="tile-submit" disabled={input.length !== level.start.length}>Ход <span aria-hidden="true">→</span></button>
+              </div>
+              {error && <p id="move-error" className="error" role="alert">{error}</p>}
+            </form>
+          )}
           <div className="target-heading"><span className="target-label">В слово</span><span className="match-progress" aria-live="polite">{matchingCount} из {level.end.length} букв на месте</span></div>
           <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
           {won ? (
@@ -110,12 +128,6 @@ export default function App() {
               <p>{moves === level.min_moves ? "Идеальный маршрут — кратчайший путь." : `Цель достигнута за ${moves} ходов. Кратчайший путь — ${level.min_moves}.`}</p>
               <button onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Следующий уровень" : "Играть сначала"} <span aria-hidden="true">→</span></button>
             </div>
-          ) : (
-            <form className="move-form" onSubmit={submit}>
-              <label htmlFor="next-word">Твой следующий ход</label>
-              <div className="input-row"><input id="next-word" value={input} onChange={(event) => { setInput(event.target.value); setError(""); }} placeholder="Введи слово" maxLength={level.start.length} autoComplete="off" autoCapitalize="none" spellCheck={false} /><button type="submit">Ход <span aria-hidden="true">→</span></button></div>
-              {error && <p className="error" role="alert">{error}</p>}
-            </form>
           )}
           <div className="play-footer">
             <div className="move-actions"><button className="text-button" onClick={undoMove} disabled={chain.length <= 1 || won}>Отменить ход</button><button className="text-button" onClick={() => { setChain([level.start]); setInput(""); setError(""); }} disabled={chain.length <= 1}>Начать заново</button></div>
