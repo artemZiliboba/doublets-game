@@ -53,3 +53,64 @@
 .level-tile:hover{border-color:#819b8b}
 .picker-empty{font-size:14px;color:#526760}
 @media(max-width:420px){.picker-backdrop{padding:10px}.level-picker{max-height:92vh}.level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.move-actions{gap:12px}}
+
+/* A single native input provides paste, IME and keyboard behavior; the tiles are its visual surface. */
+.tile-move-form{margin:26px 0 10px}
+.tile-input-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.letter-input-wrap{position:relative;display:inline-flex;max-width:100%;cursor:text}
+.letter-input-tiles{display:flex;gap:9px;pointer-events:none}
+.input-tile{display:grid;place-items:center;width:clamp(39px,4.8vw,63px);height:clamp(51px,5.3vw,69px);border:2px solid #a9c4b2;border-radius:4px;background:#eaf1e6;color:#18352d;font-size:29px;font-weight:800;line-height:1}
+.letter-input-wrap:focus-within .input-tile-active{border-color:#d4e59a;box-shadow:inset 0 -3px 0 #b3cc78}
+.letter-input-native{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:text;z-index:1;color:transparent;caret-color:transparent}
+.tile-submit{border:0;border-radius:4px;background:#d4e59a;color:#18352d;padding:15px 20px;min-height:51px;font-weight:800}
+.tile-submit:hover:not(:disabled){background:#e3f1b7}
+.tile-submit:disabled{opacity:.45;cursor:not-allowed}
+.route{min-height:30px}
+@media(max-width:420px){.letter-input-tiles{gap:6px}.input-tile{width:clamp(37px,11vw,44px);height:53px;font-size:25px}.tile-input-row{gap:10px}.tile-submit{padding:12px 15px}}
+
+/* Victory replaces the input in the same reserved space: no new panel or scroll jump. */
+.move-slot{min-height:132px;display:flex;align-items:center}
+.move-slot>.tile-move-form{width:100%;margin:0}
+.compact-result{width:100%;min-height:94px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.result-summary{color:#dce9db;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.result-separator{color:#8eae9d;padding:0 3px}
+.next-level-button{border:0;background:#d4e59a;color:#17352d;border-radius:22px;padding:11px 17px;font-size:13px;font-weight:800;min-height:42px;white-space:nowrap}
+.next-level-button:hover{background:#e5f1b9}
+.next-level-button:focus-visible{outline:3px solid #f2e4a5;outline-offset:3px}
+.target-success{display:inline-flex;align-items:center;gap:5px;color:#cce5a3;font-size:12px;font-weight:700;margin-bottom:11px}
+.target-heading{min-height:40px;align-items:end}
+@media(prefers-reduced-motion:no-preference){
+  .word-celebrate .letter{animation:goal-pulse 680ms cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(var(--letter-index) * 80ms)}
+  .target-success,.compact-result{animation:win-soft-reveal 320ms ease-out both}
+}
+@keyframes goal-pulse{0%{transform:scale(1);background:#d4e59a}38%{transform:scale(1.075);background:#effac9}100%{transform:scale(1);background:#a4d6b5}}
+@keyframes win-soft-reveal{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.word-celebrate .letter,.target-success,.compact-result{animation:none}}
+@media(max-width:420px){.move-slot{min-height:120px}.compact-result{min-height:90px}}
+
+/* Cohesive game rhythm: one column, no empty reserved win row. */
+.play-area{min-height:0;padding:clamp(24px,3vw,38px);border-radius:12px}
+.play-top{padding-bottom:22px;margin-bottom:24px}
+.play-area>.target-label{margin:0 0 10px}
+.play-area>.word-start{margin-bottom:0}
+.route{min-height:0;padding:8px 0 0 4px;margin:0}
+.route-step{margin:9px 0;gap:14px;line-height:1.25}
+.tile-move-form{margin:23px 0 0}
+.tile-move-form label{margin-bottom:10px}
+.target-heading{margin-top:24px;min-height:0;align-items:center}
+.target-heading .target-label{margin:0 0 10px}
+.target-success{margin:0 0 10px}
+.word-end{margin:0}
+.compact-result{min-height:0;width:fit-content;max-width:100%;display:flex;align-items:center;justify-content:flex-start;gap:14px;margin-top:18px;flex-wrap:wrap}
+.result-summary{font-size:13px;white-space:nowrap}
+.next-level-button{min-height:38px;padding:9px 15px;font-size:12px}
+.play-footer{margin-top:26px;padding-top:17px}
+@media(max-width:420px){.play-area{padding:22px}.play-top{margin-bottom:22px}.route-step{font-size:21px}.compact-result{gap:12px}.play-footer{gap:10px}}
+
+/* Success is communicated by the completed goal tiles; the only visible action is next. */
+.target-heading .target-label{margin-bottom:10px}
+.win-action{display:flex;align-items:center;margin-top:16px}
+.win-action .next-level-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:10px 20px;border-radius:8px;font-size:15px;font-weight:750;letter-spacing:0}
+.win-action .next-level-button:focus-visible{outline:3px solid #f2e4a5;outline-offset:4px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(prefers-reduced-motion:no-preference){.word-celebrate .letter{animation:goal-pulse 680ms cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(var(--letter-index) * 80ms)}.win-action{animation:win-soft-reveal 250ms ease-out both}}
