@@ -106,3 +106,11 @@
 .next-level-button{min-height:38px;padding:9px 15px;font-size:12px}
 .play-footer{margin-top:26px;padding-top:17px}
 @media(max-width:420px){.play-area{padding:22px}.play-top{margin-bottom:22px}.route-step{font-size:21px}.compact-result{gap:12px}.play-footer{gap:10px}}
+
+/* Success is communicated by the completed goal tiles; the only visible action is next. */
+.target-heading .target-label{margin-bottom:10px}
+.win-action{display:flex;align-items:center;margin-top:16px}
+.win-action .next-level-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:10px 20px;border-radius:8px;font-size:15px;font-weight:750;letter-spacing:0}
+.win-action .next-level-button:focus-visible{outline:3px solid #f2e4a5;outline-offset:4px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(prefers-reduced-motion:no-preference){.word-celebrate .letter{animation:goal-pulse 680ms cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(var(--letter-index) * 80ms)}.win-action{animation:win-soft-reveal 250ms ease-out both}}
