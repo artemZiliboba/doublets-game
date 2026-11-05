@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { checkMove, demo, loadBundle, type Bundle } from "./game";
+import WinConfetti from "./WinConfetti";
 
 const STORAGE_KEY = "doublets-game:completed:v1";
 
@@ -99,6 +100,7 @@ export default function App() {
           {dataNotice && <p className="notice" role="status">{dataNotice}</p>}
         </section>
         <section className="play-area" aria-label="Игровое поле">
+          {won && <WinConfetti key={`${level.id}-${chain.length}`} />}
           <div className="play-top">
             <div><span className="overline">Уровень</span><strong>{String(index + 1).padStart(2, "0")} <span className="muted">/ {bundle.levels.length}</span></strong></div>
             <div className="play-top-right"><span className="overline">Ходов</span><strong>{moves} <span className="muted">/ мин. {level.min_moves}</span></strong></div>
@@ -129,6 +131,7 @@ export default function App() {
             <div className={`ladder-row ladder-goal ${won ? "ladder-goal-won" : ""}`}>
               <span className="ladder-label">Целевое<br />слово</span>
               <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
+              {won && <button ref={nextButtonRef} type="button" className="goal-next" onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Дальше" : "Сначала"} <span aria-hidden="true">→</span></button>}
             </div>
           </div>
           {won && <span className="sr-only" role="status">Уровень пройден. Нажмите Enter для следующего уровня.</span>}
