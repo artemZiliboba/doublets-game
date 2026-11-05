@@ -26,26 +26,24 @@ export default function WinConfetti() {
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas!.width = Math.round(window.innerWidth * dpr);
-      canvas!.height = Math.round(window.innerHeight * dpr);
-      canvas!.style.width = window.innerWidth + "px";
-      canvas!.style.height = window.innerHeight + "px";
+      const { width, height } = canvas!.getBoundingClientRect();
+      canvas!.width = Math.round(width * dpr);
+      canvas!.height = Math.round(height * dpr);
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     resize();
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    // Two celebratory bursts from opposite sides, spreading across the viewport.
-    for (let i = 0; i < 145; i++) {
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    // Two bursts rise from the lower corners of the game card.
+    for (let i = 0; i < 110; i++) {
       const left = i % 2 === 0;
-      const angle = left ? random(-1.2, 0.15) : random(Math.PI - 0.15, Math.PI + 1.2);
-      const speed = random(4.5, 12);
+      const speed = random(3.5, 8);
       particles.push({
-        x: left ? -10 : width + 10,
-        y: height * random(0.28, 0.68),
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - random(2, 5),
+        x: left ? 12 : width - 12,
+        y: height * random(0.68, 0.84),
+        vx: (left ? 1 : -1) * speed * random(0.55, 1),
+        vy: -random(6, 12),
         gravity: random(0.09, 0.18),
         size: random(4, 9),
         rotation: random(0, Math.PI * 2),
@@ -63,7 +61,7 @@ export default function WinConfetti() {
       previous = timestamp;
       elapsed += delta;
       frame++;
-      ctx!.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx!.clearRect(0, 0, canvas!.clientWidth, canvas!.clientHeight);
       const fade = Math.min(1, Math.max(0, (duration - elapsed) / 650));
       for (const p of particles) {
         p.x += p.vx * dt;
@@ -86,16 +84,17 @@ export default function WinConfetti() {
     const onVisibilityChange = () => {
       if (document.hidden) {
         cancelAnimationFrame(animationId);
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
       }
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
-    window.addEventListener("resize", resize);
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
     animationId = requestAnimationFrame(animate);
     return () => {
       cancelAnimationFrame(animationId);
       document.removeEventListener("visibilitychange", onVisibilityChange);
-      window.removeEventListener("resize", resize);
+      observer.disconnect();
     };
   }, []);
 
