@@ -149,3 +149,18 @@
 .play-area{min-height:0}
 @media(max-width:550px){.ladder-board{--label-size:77px;--tile-size:clamp(32px,9.1vw,47px);--tile-gap:5px}.ladder-row{grid-template-columns:var(--label-size) minmax(0,1fr) 30px;column-gap:7px;padding:10px 8px}.ladder-label{font-size:10px}.ladder-board .letter,.ladder-board .input-tile,.ladder-letter{height:clamp(43px,11vw,54px);font-size:22px}.ladder-route::before{left:calc(8px + var(--label-size) + 7px + var(--tile-size) / 2)}.ladder-step-index{width:25px;height:25px}.win-action{margin-left:calc(var(--label-size) + 15px)}}
 @media(max-width:380px){.ladder-board{--label-size:63px;--tile-size:clamp(30px,8.6vw,36px);--tile-gap:4px}.ladder-label{font-size:9px}.ladder-row{grid-template-columns:var(--label-size) minmax(0,1fr) 26px;column-gap:5px}.ladder-route::before{left:calc(8px + var(--label-size) + 5px + var(--tile-size) / 2)}.ladder-board .letter,.ladder-board .input-tile,.ladder-letter{height:43px;font-size:19px}}
+
+/* Five- and six-letter levels keep full-size touch targets on narrow screens. */
+@media(max-width:550px){
+ .ladder-long{--label-size:30px;--tile-size:clamp(27px,7.6vw,38px);--tile-gap:3px}
+ .ladder-long .ladder-row{grid-template-columns:30px minmax(0,1fr) 27px;gap:5px}
+ .ladder-long .ladder-start,.ladder-long .ladder-goal{grid-template-columns:minmax(0,1fr) 27px;row-gap:7px}
+ .ladder-long .ladder-start .ladder-label,.ladder-long .ladder-goal .ladder-label{grid-column:1/-1;font-size:11px}
+ .ladder-long .ladder-label br{display:none}
+ .ladder-long .ladder-start .word,.ladder-long .ladder-goal .word{grid-column:1}
+ .ladder-long .ladder-route::before{display:none}
+ .ladder-long .ladder-board .letter{font-size:19px}
+ .ladder-long .ladder-letter,.ladder-long .letter,.ladder-long .input-tile{height:44px;font-size:19px}
+ .ladder-long .ladder-step-index{width:25px;height:25px}
+ .ladder-long .ladder-submit{width:27px}
+}
