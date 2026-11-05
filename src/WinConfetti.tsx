@@ -58,9 +58,10 @@ export default function WinConfetti() {
 
     function animate(timestamp: number) {
       if (!previous) previous = timestamp;
-      const dt = Math.min((timestamp - previous) / 16.67, 2);
+      const delta = Math.min(timestamp - previous, 34);
+      const dt = delta / 16.67;
       previous = timestamp;
-      elapsed += timestamp - (frame === 0 ? timestamp : timestamp - dt * 16.67);
+      elapsed += delta;
       frame++;
       ctx!.clearRect(0, 0, window.innerWidth, window.innerHeight);
       const fade = Math.min(1, Math.max(0, (duration - elapsed) / 650));
