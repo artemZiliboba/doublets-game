@@ -103,33 +103,38 @@ export default function App() {
             <div><span className="overline">Уровень</span><strong>{String(index + 1).padStart(2, "0")} <span className="muted">/ {bundle.levels.length}</span></strong></div>
             <div className="play-top-right"><span className="overline">Ходов</span><strong>{moves} <span className="muted">/ мин. {level.min_moves}</span></strong></div>
           </div>
-          <div className="target-label">Преврати</div>
-          <div className="word word-start" aria-label={`Начальное слово: ${level.start}`}>{[...level.start].map((letter, i) => <span className="letter" key={i}>{letter.toUpperCase()}</span>)}</div>
-          <div className="route" aria-live="polite">
-            {chain.slice(1).map((word, i) => <div className="route-step" key={i}><span className="route-number">{i + 1}</span><span className="route-letters">{[...word].map((letter, j) => <span key={j} className={letter !== [...chain[i]][j] ? "route-changed" : ""}>{letter.toUpperCase()}</span>)}</span></div>)}
-
-          </div>
-          {!won && (
-            <form className="move-form tile-move-form" onSubmit={submit}>
-              <label htmlFor="next-word">Твой следующий ход</label>
-              <div className="tile-input-row">
+          <div className="ladder-board">
+            <div className="ladder-row ladder-start">
+              <span className="ladder-label">Начальное<br />слово</span>
+              <div className="word word-start" aria-label={`Начальное слово: ${level.start}`}>{[...level.start].map((letter, i) => <span className="letter" key={i}>{letter.toUpperCase()}</span>)}</div>
+            </div>
+            <div className="ladder-route" aria-live="polite">
+              {chain.slice(1).map((word, i) => <div className="ladder-row ladder-step" key={i}>
+                <span className="ladder-step-index">{i + 1}</span>
+                <div className="ladder-letters" aria-label={`Ход ${i + 1}: ${word}`}>{[...word].map((letter, j) => <span className={`ladder-letter ${letter !== [...chain[i]][j] ? "ladder-changed" : ""}`} key={j}>{letter.toUpperCase()}</span>)}</div>
+                <span className="ladder-step-mark" aria-label="Верный ход"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true"><path d="m4 10 4 4 8-8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
+              </div>)}
+            </div>
+            {!won && <form className="ladder-row ladder-entry" onSubmit={submit}>
+              <label className="ladder-step-index ladder-input-index" htmlFor="next-word">{chain.length}</label>
+              <div className="ladder-input-content">
                 <div className="letter-input-wrap" onClick={() => inputRef.current?.focus()}>
                   <div className="letter-input-tiles" aria-hidden="true">{Array.from({ length: level.start.length }, (_, i) => <span className={`input-tile ${i === Math.min(input.length, level.start.length - 1) ? "input-tile-active" : ""}`} key={i}>{[...input][i] || ""}</span>)}</div>
                   <input ref={inputRef} id="next-word" className="letter-input-native" type="text" inputMode="text" value={input} onChange={(event) => { setInput([...event.target.value.toLocaleUpperCase("ru").replace(/[^А-ЯЁ]/g, "")].slice(0, level.start.length).join("")); setError(""); }} maxLength={level.start.length} autoComplete="off" autoCapitalize="characters" spellCheck={false} aria-label={`Следующее слово, ${level.start.length} букв`} aria-invalid={Boolean(error)} aria-describedby={error ? "move-error" : undefined} />
                 </div>
-                <button type="submit" className="tile-submit" disabled={input.length !== level.start.length}>Ход <span aria-hidden="true">→</span></button>
+                {error && <p id="move-error" className="error" role="alert">{error}</p>}
               </div>
-              {error && <p id="move-error" className="error" role="alert">{error}</p>}
-            </form>
-          )}
-          <div className="target-heading"><span className="target-label">В слово</span></div>
-          <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
-          {won && (
-            <div className="win-action">
-              <span className="sr-only" role="status">Уровень пройден. {moves === level.min_moves ? "Идеальный маршрут." : ""} Нажмите Enter, чтобы перейти к следующему уровню.</span>
-              <button ref={nextButtonRef} type="button" className="next-level-button" onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Дальше" : "Сначала"} <span aria-hidden="true">→</span></button>
+              <button type="submit" className="ladder-submit" disabled={input.length !== level.start.length} aria-label="Проверить слово"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+            </form>}
+            <div className={`ladder-row ladder-goal ${won ? "ladder-goal-won" : ""}`}>
+              <span className="ladder-label">Целевое<br />слово</span>
+              <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
             </div>
-          )}
+          </div>
+          {won && <div className="win-action">
+            <span className="sr-only" role="status">Уровень пройден. Нажмите Enter для следующего уровня.</span>
+            <button ref={nextButtonRef} type="button" className="next-level-button" onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Дальше" : "Сначала"} <span aria-hidden="true">→</span></button>
+          </div>}
           <div className="play-footer">
             <div className="move-actions"><button className="text-button" onClick={undoMove} disabled={chain.length <= 1 || won}>Отменить ход</button><button className="text-button" onClick={() => { setChain([level.start]); setInput(""); setError(""); }} disabled={chain.length <= 1}>Начать заново</button></div>
             <button className="level-picker-trigger" onClick={() => setLevelPickerOpen(true)}>Все уровни <span aria-hidden="true">↗</span></button>
