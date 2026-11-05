@@ -164,3 +164,22 @@
  .ladder-long .ladder-step-index{width:25px;height:25px}
  .ladder-long .ladder-submit{width:27px}
 }
+
+/* Second pass: consistent rhythm, no artificial connector or detached CTA. */
+.ladder-board{gap:8px;margin-top:24px}
+.ladder-route{padding:0;display:flex;flex-direction:column;gap:8px}
+.ladder-route::before{content:none!important;display:none!important}
+.ladder-row{margin:0!important;padding:12px 14px;min-height:76px;column-gap:10px;border-radius:10px}
+.ladder-start,.ladder-goal{background:#24463a}
+.ladder-step{background:#1d3c32}
+.ladder-entry{background:#24483b;border:1px solid #648775}
+.ladder-goal{margin-top:6px!important}
+.ladder-step-mark{opacity:.65}
+.ladder-goal-won{grid-template-columns:var(--label-size) minmax(0,1fr) auto;background:#315745}
+.goal-next{grid-column:3;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#d4e59a;color:#17352d;border:0;border-radius:9px;min-height:44px;padding:0 15px;font-size:13px;font-weight:800;white-space:nowrap}
+.goal-next:hover{background:#e4efb8}
+.goal-next:focus-visible{outline:3px solid #f4df96;outline-offset:3px}
+.play-footer{margin-top:24px;padding-top:18px}
+@media(max-width:550px){.ladder-row{padding:10px 8px;min-height:65px;column-gap:7px}.ladder-goal-won{grid-template-columns:var(--label-size) minmax(0,1fr) auto}.goal-next{padding:0 10px;font-size:12px;min-height:42px}}
+@media(max-width:420px){.ladder-goal-won{grid-template-columns:var(--label-size) minmax(0,1fr)}.ladder-goal-won .goal-next{grid-column:2;justify-self:start;margin-top:8px}.ladder-board{gap:7px}.ladder-route{gap:7px}}
+@media(max-width:550px){.ladder-long .ladder-goal-won{grid-template-columns:minmax(0,1fr) 27px}.ladder-long .ladder-goal-won .goal-next{grid-column:1;justify-self:start;margin-top:8px}}
