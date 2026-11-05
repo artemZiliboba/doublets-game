@@ -53,3 +53,17 @@
 .level-tile:hover{border-color:#819b8b}
 .picker-empty{font-size:14px;color:#526760}
 @media(max-width:420px){.picker-backdrop{padding:10px}.level-picker{max-height:92vh}.level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.move-actions{gap:12px}}
+
+/* A single native input provides paste, IME and keyboard behavior; the tiles are its visual surface. */
+.tile-move-form{margin:26px 0 10px}
+.tile-input-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.letter-input-wrap{position:relative;display:inline-flex;max-width:100%;cursor:text}
+.letter-input-tiles{display:flex;gap:9px;pointer-events:none}
+.input-tile{display:grid;place-items:center;width:clamp(39px,4.8vw,63px);height:clamp(51px,5.3vw,69px);border:2px solid #a9c4b2;border-radius:4px;background:#eaf1e6;color:#18352d;font-size:29px;font-weight:800;line-height:1}
+.letter-input-wrap:focus-within .input-tile-active{border-color:#d4e59a;box-shadow:inset 0 -3px 0 #b3cc78}
+.letter-input-native{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:text;z-index:1;color:transparent;caret-color:transparent}
+.tile-submit{border:0;border-radius:4px;background:#d4e59a;color:#18352d;padding:15px 20px;min-height:51px;font-weight:800}
+.tile-submit:hover:not(:disabled){background:#e3f1b7}
+.tile-submit:disabled{opacity:.45;cursor:not-allowed}
+.route{min-height:30px}
+@media(max-width:420px){.letter-input-tiles{gap:6px}.input-tile{width:clamp(37px,11vw,44px);height:53px;font-size:25px}.tile-input-row{gap:10px}.tile-submit{padding:12px 15px}}
