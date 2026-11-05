@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "rules": {
+    "language": "ru",
+    "min_word_length": 3,
+    "max_word_length": 6,
+    "one_letter_per_move": true,
+    "yo_distinct": true
+  },
+  "level_count": 95,
+  "word_count": 12388,
+  "files": {
+    "levels.json": {
+      "sha256": "fe7fb97c549d64c5e75eb712ccd9080de7afc847cdad23ca431e36ace3c7b315"
+    },
+    "words.json": {
+      "sha256": "957383ac561ad8b31bdbf959614bcd91170a6f17cbb6d937aea2a11e94f422b2"
+    }
+  }
+}
