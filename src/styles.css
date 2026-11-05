@@ -185,4 +185,5 @@
 @media(max-width:550px){.ladder-long .ladder-goal-won{grid-template-columns:minmax(0,1fr) 27px}.ladder-long .ladder-goal-won .goal-next{grid-column:1;justify-self:start;margin-top:8px}}
 
 /* Full-viewport win celebration stays above the UI without blocking controls. */
-.win-confetti{position:fixed;inset:0;z-index:100;pointer-events:none;display:block;width:100vw;height:100vh}
+.play-area{position:relative;overflow:hidden;isolation:isolate}
+.win-confetti{position:absolute;inset:0;z-index:10;pointer-events:none;display:block;width:100%;height:100%}
