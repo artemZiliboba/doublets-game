@@ -103,7 +103,7 @@ export default function App() {
             <div><span className="overline">Уровень</span><strong>{String(index + 1).padStart(2, "0")} <span className="muted">/ {bundle.levels.length}</span></strong></div>
             <div className="play-top-right"><span className="overline">Ходов</span><strong>{moves} <span className="muted">/ мин. {level.min_moves}</span></strong></div>
           </div>
-          <div className="ladder-board">
+          <div className={`ladder-board ${level.start.length >= 5 ? "ladder-long" : ""}`}>
             <div className="ladder-row ladder-start">
               <span className="ladder-label">Начальное<br />слово</span>
               <div className="word word-start" aria-label={`Начальное слово: ${level.start}`}>{[...level.start].map((letter, i) => <span className="letter" key={i}>{letter.toUpperCase()}</span>)}</div>
