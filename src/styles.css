@@ -87,3 +87,22 @@
 @keyframes win-soft-reveal{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.word-celebrate .letter,.target-success,.compact-result{animation:none}}
 @media(max-width:420px){.move-slot{min-height:120px}.compact-result{min-height:90px}}
+
+/* Cohesive game rhythm: one column, no empty reserved win row. */
+.play-area{min-height:0;padding:clamp(24px,3vw,38px);border-radius:12px}
+.play-top{padding-bottom:22px;margin-bottom:24px}
+.play-area>.target-label{margin:0 0 10px}
+.play-area>.word-start{margin-bottom:0}
+.route{min-height:0;padding:8px 0 0 4px;margin:0}
+.route-step{margin:9px 0;gap:14px;line-height:1.25}
+.tile-move-form{margin:23px 0 0}
+.tile-move-form label{margin-bottom:10px}
+.target-heading{margin-top:24px;min-height:0;align-items:center}
+.target-heading .target-label{margin:0 0 10px}
+.target-success{margin:0 0 10px}
+.word-end{margin:0}
+.compact-result{min-height:0;width:fit-content;max-width:100%;display:flex;align-items:center;justify-content:flex-start;gap:14px;margin-top:18px;flex-wrap:wrap}
+.result-summary{font-size:13px;white-space:nowrap}
+.next-level-button{min-height:38px;padding:9px 15px;font-size:12px}
+.play-footer{margin-top:26px;padding-top:17px}
+@media(max-width:420px){.play-area{padding:22px}.play-top{margin-bottom:22px}.route-step{font-size:21px}.compact-result{gap:12px}.play-footer{gap:10px}}
