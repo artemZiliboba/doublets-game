@@ -41,7 +41,6 @@ export default function App() {
   const moves = chain.length - 1;
   const currentWord = chain.at(-1)!;
   const matchingPositions = [...level.end].map((letter, i) => letter === [...currentWord][i]);
-  const matchingCount = matchingPositions.filter(Boolean).length;
 
   useEffect(() => {
     if (!won && !levelPickerOpen) inputRef.current?.focus();
@@ -107,7 +106,13 @@ export default function App() {
             {chain.slice(1).map((word, i) => <div className="route-step" key={i}><span className="route-number">{i + 1}</span><span className="route-letters">{[...word].map((letter, j) => <span key={j} className={letter !== [...chain[i]][j] ? "route-changed" : ""}>{letter.toUpperCase()}</span>)}</span></div>)}
 
           </div>
-          {!won && (
+          <div className="move-slot">
+            {won ? (
+              <div className="compact-result" role="status" aria-label="Уровень пройден">
+                <span className="result-summary">{moves === level.min_moves ? "Идеально" : "Разгадано"} <span className="result-separator">·</span> {moves} {moves === 1 ? "ход" : moves < 5 ? "хода" : "ходов"}</span>
+                <button className="next-level-button" onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Дальше" : "Сначала"} <span aria-hidden="true">→</span></button>
+              </div>
+            ) : (
             <form className="move-form tile-move-form" onSubmit={submit}>
               <label htmlFor="next-word">Твой следующий ход</label>
               <div className="tile-input-row">
@@ -119,16 +124,10 @@ export default function App() {
               </div>
               {error && <p id="move-error" className="error" role="alert">{error}</p>}
             </form>
-          )}
-          <div className="target-heading"><span className="target-label">В слово</span><span className="match-progress" aria-live="polite">{matchingCount} из {level.end.length} букв на месте</span></div>
+            )}
+          </div>
+          <div className="target-heading"><span className="target-label">В слово</span>{won && <span className="target-success" role="status"><svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" strokeWidth="1.5"/><path d="m6 10 2.5 2.5 5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg> Готово</span>}</div>
           <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
-          {won && (
-            <div className="win win-celebrate" role="status">
-              <div className="win-symbol" aria-hidden="true">✓</div><h2>Получилось!</h2>
-              <p>{moves === level.min_moves ? "Идеальный маршрут — кратчайший путь." : `Цель достигнута за ${moves} ходов. Кратчайший путь — ${level.min_moves}.`}</p>
-              <button onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Следующий уровень" : "Играть сначала"} <span aria-hidden="true">→</span></button>
-            </div>
-          )}
           <div className="play-footer">
             <div className="move-actions"><button className="text-button" onClick={undoMove} disabled={chain.length <= 1 || won}>Отменить ход</button><button className="text-button" onClick={() => { setChain([level.start]); setInput(""); setError(""); }} disabled={chain.length <= 1}>Начать заново</button></div>
             <button className="level-picker-trigger" onClick={() => setLevelPickerOpen(true)}>Все уровни <span aria-hidden="true">↗</span></button>
