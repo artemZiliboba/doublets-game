@@ -17,6 +17,7 @@ export default function App() {
   const [chain, setChain] = useState<string[]>([demo.levels[0].start]);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
   const [error, setError] = useState("");
   const [completed, setCompleted] = useState<string[]>(readCompleted);
   const [levelPickerOpen, setLevelPickerOpen] = useState(false);
@@ -43,7 +44,9 @@ export default function App() {
   const matchingPositions = [...level.end].map((letter, i) => letter === [...currentWord][i]);
 
   useEffect(() => {
-    if (!won && !levelPickerOpen) inputRef.current?.focus();
+    if (levelPickerOpen) return;
+    if (won) nextButtonRef.current?.focus();
+    else inputRef.current?.focus();
   }, [index, won, levelPickerOpen, bundle]);
 
   function chooseLevel(next: number) {
@@ -119,12 +122,12 @@ export default function App() {
               {error && <p id="move-error" className="error" role="alert">{error}</p>}
             </form>
           )}
-          <div className="target-heading"><span className="target-label">В слово</span>{won && <span className="target-success" role="status"><svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" strokeWidth="1.5"/><path d="m6 10 2.5 2.5 5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg> Готово</span>}</div>
+          <div className="target-heading"><span className="target-label">В слово</span></div>
           <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
           {won && (
-            <div className="compact-result" role="status" aria-label="Уровень пройден">
-              <span className="result-summary">{moves === level.min_moves ? "Идеально" : "Разгадано"} <span className="result-separator">·</span> {moves} {moves === 1 ? "ход" : moves < 5 ? "хода" : "ходов"}</span>
-              <button className="next-level-button" onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Дальше" : "Сначала"} <span aria-hidden="true">→</span></button>
+            <div className="win-action">
+              <span className="sr-only" role="status">Уровень пройден. {moves === level.min_moves ? "Идеальный маршрут." : ""} Нажмите Enter, чтобы перейти к следующему уровню.</span>
+              <button ref={nextButtonRef} type="button" className="next-level-button" onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Дальше" : "Сначала"} <span aria-hidden="true">→</span></button>
             </div>
           )}
           <div className="play-footer">
