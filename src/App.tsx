@@ -131,10 +131,7 @@ export default function App() {
               <div className={`word word-end ${won ? "word-complete word-celebrate" : ""}`} aria-label={`Целевое слово: ${level.end}`}>{[...level.end].map((letter, i) => <span className={`letter ${matchingPositions[i] ? "letter-matched" : ""}`} key={i} style={{ "--letter-index": i } as CSSProperties}>{letter.toUpperCase()}</span>)}</div>
             </div>
           </div>
-          {won && <div className="win-action">
-            <span className="sr-only" role="status">Уровень пройден. Нажмите Enter для следующего уровня.</span>
-            <button ref={nextButtonRef} type="button" className="next-level-button" onClick={() => chooseLevel((index + 1) % bundle.levels.length)}>{index + 1 < bundle.levels.length ? "Дальше" : "Сначала"} <span aria-hidden="true">→</span></button>
-          </div>}
+          {won && <span className="sr-only" role="status">Уровень пройден. Нажмите Enter для следующего уровня.</span>}
           <div className="play-footer">
             <div className="move-actions"><button className="text-button" onClick={undoMove} disabled={chain.length <= 1 || won}>Отменить ход</button><button className="text-button" onClick={() => { setChain([level.start]); setInput(""); setError(""); }} disabled={chain.length <= 1}>Начать заново</button></div>
             <button className="level-picker-trigger" onClick={() => setLevelPickerOpen(true)}>Все уровни <span aria-hidden="true">↗</span></button>
